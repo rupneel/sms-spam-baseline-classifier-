@@ -1,0 +1,19 @@
+# Data files (too large / reproducible via ingest.py)
+data/raw/
+data/cleaned/
+
+# Model artifacts (reproducible via pipeline)
+outputs/models/
+outputs/scores/
+outputs/figures/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
