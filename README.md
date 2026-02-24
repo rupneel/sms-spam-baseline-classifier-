@@ -9,8 +9,9 @@ A complete data-science pipeline that classifies SMS messages as **spam** or
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run the full pipeline
-python run_all.py
+# 2. Run each script individually from src/
+python src/ingest.py
+python src/quality.py
 ```
 
 ## Project Structure
@@ -21,30 +22,19 @@ sms-spam-classifier/
 ├── data/cleaned/      ← cleaned dataset
 ├── src/               ← Python pipeline scripts
 ├── outputs/
-│   ├── reports/       ← quality & label reports (HTML)
-│   ├── models/        ← saved model + vectorizer (.pkl)
-│   ├── scores/        ← batch scoring outputs
+│   ├── reports/       ← quality report (HTML)
 │   └── figures/       ← plots (PNG)
-├── dashboard/         ← interactive HTML dashboard
-├── presentation/      ← slide deck (HTML)
-├── docs/              ← data dictionary, executive summary
+├── docs/              ← data dictionary, problem framing
 ├── requirements.txt
-├── run_all.py         ← runs everything in order
 └── README.md
 ```
 
-## Pipeline Steps
+## Completed Steps
 
 | Script          | What it does                                      |
 |-----------------|---------------------------------------------------|
 | `ingest.py`     | Download, clean, validate, save dataset            |
 | `quality.py`    | Data quality report (missingness, duplicates, etc) |
-| `labels.py`     | Label sanity checks and class balance              |
-| `preprocess.py` | Text normalisation + TF-IDF vectorisation          |
-| `model.py`      | Train Naive Bayes + majority-class baseline        |
-| `evaluate.py`   | Metrics, confusion matrix, error analysis          |
-| `threshold.py`  | Precision-recall trade-off analysis                |
-| `score.py`      | Batch scoring with saved model                     |
 
 ## Dataset
 
