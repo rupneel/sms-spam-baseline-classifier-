@@ -1,6 +1,4 @@
-# Data files (too large / reproducible via ingest.py)
-data/raw/
-data/cleaned/
+# Data files
 
 # Model artifacts (reproducible via pipeline)
 outputs/models/
