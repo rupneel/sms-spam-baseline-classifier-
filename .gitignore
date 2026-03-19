@@ -1,6 +1,7 @@
-# Data files
-# data/raw/
-# data/cleaned/
+# Data (reproducible via ingest.py)
+data/raw/
+data/cleaned/
+data/processed/
 
 # Model artifacts (reproducible via pipeline)
 outputs/models/
