@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data Quality Report — SMS Spam Classifier</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px;
+         margin: 2rem auto; padding: 0 1rem; color: #222; }
+  h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: .5rem; }
+  h2 { color: #2980b9; margin-top: 2rem; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+  th { background: #3498db; color: white; }
+  .ok  { color: #27ae60; font-weight: bold; }
+  .warn { color: #e67e22; font-weight: bold; }
+  .bad { color: #c0392b; font-weight: bold; }
+  img { max-width: 100%; margin: 1rem 0; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<h1>📊 Data Quality Report</h1>
+<p><strong>Dataset:</strong> SMS Spam Collection (cleaned)<br>
+   <strong>Rows:</strong> 5,169</p>
+
+<h2>1. Missing Values</h2>
+<table>
+  <tr><th>Column</th><th>Missing Count</th><th>Missing %</th><th>Status</th></tr>
+  <tr><td>label</td><td>0</td><td>0.0%</td><td class="ok">✓ Clean</td></tr>
+  <tr><td>message</td><td>0</td><td>0.0%</td><td class="ok">✓ Clean</td></tr>
+</table>
+
+<h2>2. Duplicate Analysis</h2>
+<table>
+  <tr><th>Metric</th><th>Count</th></tr>
+  <tr><td>Exact duplicate rows</td><td>0</td></tr>
+  <tr><td>Duplicate messages (text only)</td><td>0</td></tr>
+  <tr><td>Total rows</td><td>5,169</td></tr>
+</table>
+
+<h2>3. Class Balance</h2>
+<table>
+  <tr><th>Label</th><th>Count</th><th>Percentage</th></tr>
+  <tr><td>ham</td><td>4,516</td><td>87.37%</td></tr>
+  <tr><td>spam</td><td>653</td><td>12.63%</td></tr>
+</table>
+<img src="../figures/class_distribution.png" alt="Class Distribution">
+
+<h2>4. Message Length Statistics</h2>
+<table>
+  <tr><th>Statistic</th><th>Overall</th><th>Ham</th><th>Spam</th></tr>
+  <tr><td>count</td><td>5,169.0</td><td>4,516.0</td><td>653.0</td></tr>
+  <tr><td>mean</td><td>79.5</td><td>71.0</td><td>138.1</td></tr>
+  <tr><td>std</td><td>58.5</td><td>56.7</td><td>29.9</td></tr>
+  <tr><td>min</td><td>2.0</td><td>2.0</td><td>13.0</td></tr>
+  <tr><td>25%</td><td>36.0</td><td>34.0</td><td>132.0</td></tr>
+  <tr><td>50%</td><td>61.0</td><td>53.0</td><td>149.0</td></tr>
+  <tr><td>75%</td><td>119.0</td><td>91.0</td><td>157.0</td></tr>
+  <tr><td>max</td><td>910.0</td><td>910.0</td><td>224.0</td></tr>
+</table>
+<img src="../figures/message_lengths.png" alt="Message Lengths">
+
+</body>
+</html>
