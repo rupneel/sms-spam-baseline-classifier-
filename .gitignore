@@ -1,12 +1,7 @@
 # Data (reproducible via ingest.py)
-data/raw/
-data/cleaned/
-data/processed/
 
 # Model artifacts (reproducible via pipeline)
-outputs/models/
 outputs/scores/
-outputs/figures/
 
 # Python
 __pycache__/
