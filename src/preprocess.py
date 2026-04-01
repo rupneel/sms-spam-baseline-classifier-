@@ -176,7 +176,7 @@ def vectorise(X_train, X_test):
     -------
     X_train_tfidf : sparse matrix
     X_test_tfidf  : sparse matrix
-    vectoriser    : fitted TfidfVectorizer (saved later for scoring)
+    vectoriser    : fitted TfidfVectorizer (saved later for inference)
     """
     vectoriser = TfidfVectorizer(
         max_features=5000,
@@ -273,7 +273,7 @@ def save_artefacts(X_train_tfidf, X_test_tfidf, y_train, y_test,
     Persist everything needed for the modelling step:
       • Sparse TF-IDF matrices (npz)
       • Label arrays (csv)
-      • Fitted vectoriser (joblib)  — reused in scoring / deployment
+      • Fitted vectoriser (joblib)  — reused in inference / deployment
       • Preprocessing report (json) — for traceability
     """
     # TF-IDF matrices
