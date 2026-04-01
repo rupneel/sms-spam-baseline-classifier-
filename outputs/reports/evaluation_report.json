@@ -1,0 +1,9 @@
+{
+  "accuracy": 96.91,
+  "confusion_matrix": {
+    "TN": 903,
+    "FP": 0,
+    "FN": 32,
+    "TP": 99
+  }
+}
