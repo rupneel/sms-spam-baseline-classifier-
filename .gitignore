@@ -17,3 +17,6 @@ docs/LLD.md
 # IDE
 .vscode/
 .idea/
+
+# Local scripts
+run.ps1
