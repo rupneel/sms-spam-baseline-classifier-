@@ -1,18 +1,3 @@
-"""
-labels.py — Label Sanity Checks
-==================================
-Validates the target label column before any modelling begins.
-Catches encoding errors, unexpected values, and documents the
-class-imbalance ratio so there are no surprises later.
-
-Key concepts:
-  • Why sanity-check labels?  A single typo ("Spam" vs "spam") would
-    silently create a third class and wreck every downstream metric.
-  • Imbalance ratio — if ham outnumbers spam 6:1 a majority-class
-    baseline already hits ~87 % accuracy, so accuracy alone is
-    a misleading metric.  We document this here for later reference.
-"""
-
 import os
 import sys
 import json
@@ -20,16 +5,11 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
-# ---------------------------------------------------------------------------
 # CONFIGURATION
-# ---------------------------------------------------------------------------
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLEAN_FILE   = os.path.join(PROJECT_ROOT, "data", "cleaned", "sms_clean.csv")
 REPORT_DIR   = os.path.join(PROJECT_ROOT, "outputs", "reports")
 FIGURE_DIR   = os.path.join(PROJECT_ROOT, "outputs", "figures")
-
-
 def _ensure_dirs():
     os.makedirs(REPORT_DIR, exist_ok=True)
     os.makedirs(FIGURE_DIR, exist_ok=True)
@@ -41,8 +21,6 @@ def load_clean_data() -> pd.DataFrame:
         print("[labels] ERROR: cleaned data not found. Run ingest.py first.")
         sys.exit(1)
     return pd.read_csv(CLEAN_FILE)
-
-
 # ---------------------------------------------------------------------------
 # CHECK 1 — Allowed label values
 # ---------------------------------------------------------------------------
