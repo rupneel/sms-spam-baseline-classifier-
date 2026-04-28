@@ -1,27 +1,3 @@
-"""
-preprocess.py — Text Preprocessing & Feature Engineering
-==========================================================
-Transforms raw SMS text into numerical features suitable for
-machine-learning models.
-
-Pipeline:
-  1. Text cleaning   — lowercase, strip punctuation / numbers / extra spaces
-  2. Tokenisation    — split text into individual words
-  3. Stop-word removal — drop common English words that add noise
-  4. TF-IDF vectorisation — convert tokens to a sparse numeric matrix
-  5. Train / test split — 80 / 20 stratified split
-  6. Save artefacts  — feature matrices, labels, and the fitted vectoriser
-
-Key concepts:
-  • TF-IDF (Term Frequency – Inverse Document Frequency) up-weights words
-    that are important to a document but rare across the corpus.
-  • Stratified splitting ensures each split has the same ham/spam ratio
-    as the full dataset — critical with imbalanced classes (~87/13).
-  • We fit the vectoriser on the TRAINING set only, then transform the
-    test set.  Fitting on both would leak test-set vocabulary into
-    training (data leakage).
-"""
-
 import os
 import re
 import sys
@@ -35,10 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from scipy.sparse import save_npz
-
-# ---------------------------------------------------------------------------
 # CONFIGURATION
-# ---------------------------------------------------------------------------
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLEAN_FILE   = os.path.join(PROJECT_ROOT, "data", "cleaned", "sms_clean.csv")
 PROCESSED_DIR = os.path.join(PROJECT_ROOT, "data", "processed")
@@ -48,12 +21,10 @@ REPORT_DIR   = os.path.join(PROJECT_ROOT, "outputs", "reports")
 RANDOM_STATE = 42
 TEST_SIZE    = 0.20
 
-
 def _ensure_dirs():
     os.makedirs(PROCESSED_DIR, exist_ok=True)
     os.makedirs(FIGURE_DIR, exist_ok=True)
     os.makedirs(REPORT_DIR, exist_ok=True)
-
 
 def load_clean_data() -> pd.DataFrame:
     """Load the cleaned dataset produced by ingest.py."""
@@ -62,10 +33,7 @@ def load_clean_data() -> pd.DataFrame:
         sys.exit(1)
     return pd.read_csv(CLEAN_FILE)
 
-
-# ---------------------------------------------------------------------------
 # STEP 1 — Text cleaning
-# ---------------------------------------------------------------------------
 def clean_text(text: str) -> str:
     """
     Normalise a single SMS message:
@@ -262,11 +230,7 @@ def plot_message_length_before_after(df: pd.DataFrame) -> str:
     plt.close(fig)
     print(f"[preprocess] Saved → {path}")
     return path
-
-
-# ---------------------------------------------------------------------------
 # STEP 7 — Save artefacts
-# ---------------------------------------------------------------------------
 def save_artefacts(X_train_tfidf, X_test_tfidf, y_train, y_test,
                    vectoriser, report: dict):
     """
@@ -296,11 +260,7 @@ def save_artefacts(X_train_tfidf, X_test_tfidf, y_train, y_test,
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
     print(f"[preprocess] Saved report → {report_path}")
-
-
-# ---------------------------------------------------------------------------
 # MAIN
-# ---------------------------------------------------------------------------
 def main():
     print("=" * 60)
     print(" SMS Spam Classifier — Text Preprocessing")

@@ -1,16 +1,3 @@
-"""
-quality.py — Data Quality Report
-==================================
-Generates a comprehensive data quality report for the cleaned SMS dataset.
-Covers missingness, duplicates, class balance, message length distribution,
-and outputs an HTML report.
-
-Key concepts:
-  • Profiling a dataset before modelling
-  • Generating HTML reports with Jinja2 templates
-  • Detecting class imbalance
-"""
-
 import os
 import sys
 import pandas as pd
@@ -18,36 +5,22 @@ import matplotlib
 matplotlib.use("Agg")            # headless backend — no GUI window
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-# ---------------------------------------------------------------------------
 # CONFIGURATION
-# ---------------------------------------------------------------------------
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLEAN_FILE   = os.path.join(PROJECT_ROOT, "data", "cleaned", "sms_clean.csv")
 REPORT_DIR   = os.path.join(PROJECT_ROOT, "outputs", "reports")
 FIGURE_DIR   = os.path.join(PROJECT_ROOT, "outputs", "figures")
-
-# ---------------------------------------------------------------------------
 # HELPERS
-# ---------------------------------------------------------------------------
-
 def _ensure_dirs():
     os.makedirs(REPORT_DIR, exist_ok=True)
     os.makedirs(FIGURE_DIR, exist_ok=True)
-
-
 def load_clean_data() -> pd.DataFrame:
     """Load the cleaned dataset produced by ingest.py."""
     if not os.path.exists(CLEAN_FILE):
         print("[quality] ERROR: cleaned data not found. Run ingest.py first.")
         sys.exit(1)
     return pd.read_csv(CLEAN_FILE)
-
-
-# ---------------------------------------------------------------------------
 # QUALITY CHECKS
-# ---------------------------------------------------------------------------
-
 def missing_values_report(df: pd.DataFrame) -> dict:
     """Check for missing / null values in every column."""
     total = len(df)
@@ -59,8 +32,6 @@ def missing_values_report(df: pd.DataFrame) -> dict:
             "missing_pct": round(n_miss / total * 100, 2),
         }
     return report
-
-
 def duplicate_report(df: pd.DataFrame) -> dict:
     """Check for any remaining duplicates after cleaning."""
     exact_dupes = int(df.duplicated().sum())
@@ -70,8 +41,6 @@ def duplicate_report(df: pd.DataFrame) -> dict:
         "duplicate_messages":   msg_dupes,
         "total_rows":           len(df),
     }
-
-
 def class_balance(df: pd.DataFrame) -> dict:
     """Return class counts and percentages."""
     counts = df["label"].value_counts().to_dict()
@@ -80,8 +49,6 @@ def class_balance(df: pd.DataFrame) -> dict:
         label: {"count": cnt, "pct": round(cnt / total * 100, 2)}
         for label, cnt in counts.items()
     }
-
-
 def message_length_stats(df: pd.DataFrame) -> dict:
     """Compute message-length statistics overall and per class."""
     df = df.copy()
@@ -94,12 +61,7 @@ def message_length_stats(df: pd.DataFrame) -> dict:
         per_class[label] = subset.describe().to_dict()
 
     return {"overall": overall, "per_class": per_class}
-
-
-# ---------------------------------------------------------------------------
 # PLOTS
-# ---------------------------------------------------------------------------
-
 def plot_class_distribution(df: pd.DataFrame):
     """Bar chart of ham vs spam counts."""
     fig, ax = plt.subplots(figsize=(6, 4))
@@ -117,7 +79,6 @@ def plot_class_distribution(df: pd.DataFrame):
     plt.close(fig)
     print(f"[quality] Saved → {path}")
     return path
-
 
 def plot_message_lengths(df: pd.DataFrame):
     """Histogram of message lengths by class."""
@@ -139,12 +100,7 @@ def plot_message_lengths(df: pd.DataFrame):
     plt.close(fig)
     print(f"[quality] Saved → {path}")
     return path
-
-
-# ---------------------------------------------------------------------------
 # HTML REPORT
-# ---------------------------------------------------------------------------
-
 def generate_html_report(missing, dupes, balance, lengths):
     """Build a self-contained HTML quality report."""
 
@@ -229,12 +185,7 @@ def generate_html_report(missing, dupes, balance, lengths):
         f.write(html)
     print(f"[quality] Saved HTML report → {path}")
     return path
-
-
-# ---------------------------------------------------------------------------
 # MAIN
-# ---------------------------------------------------------------------------
-
 def main():
     print("=" * 60)
     print(" SMS Spam Classifier — Data Quality Report")
