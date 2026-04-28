@@ -15,14 +15,12 @@ def _ensure_dirs():
     os.makedirs(REPORT_DIR, exist_ok=True)
     os.makedirs(FIGURE_DIR, exist_ok=True)
 def load_clean_data() -> pd.DataFrame:
-    """Load the cleaned dataset produced by ingest.py."""
     if not os.path.exists(CLEAN_FILE):
-        print("[quality] ERROR: cleaned data not found. Run ingest.py first.")
+        print("ERROR: cleaned data not found. Run ingest.py first.")
         sys.exit(1)
     return pd.read_csv(CLEAN_FILE)
 # QUALITY CHECKS
 def missing_values_report(df: pd.DataFrame) -> dict:
-    """Check for missing / null values in every column."""
     total = len(df)
     report = {}
     for col in df.columns:
@@ -33,16 +31,14 @@ def missing_values_report(df: pd.DataFrame) -> dict:
         }
     return report
 def duplicate_report(df: pd.DataFrame) -> dict:
-    """Check for any remaining duplicates after cleaning."""
-    exact_dupes = int(df.duplicated().sum())
-    msg_dupes   = int(df.duplicated(subset=["message"]).sum())
+    exact_dupes = int(df.duplicated().sum()) # exact same 
+    msg_dupes   = int(df.duplicated(subset=["message"]).sum()) #just messege
     return {
         "exact_duplicate_rows": exact_dupes,
         "duplicate_messages":   msg_dupes,
         "total_rows":           len(df),
     }
 def class_balance(df: pd.DataFrame) -> dict:
-    """Return class counts and percentages."""
     counts = df["label"].value_counts().to_dict()
     total  = len(df)
     return {
@@ -50,20 +46,16 @@ def class_balance(df: pd.DataFrame) -> dict:
         for label, cnt in counts.items()
     }
 def message_length_stats(df: pd.DataFrame) -> dict:
-    """Compute message-length statistics overall and per class."""
     df = df.copy()
     df["msg_len"] = df["message"].str.len()
-
     overall = df["msg_len"].describe().to_dict()
     per_class = {}
     for label in ["ham", "spam"]:
         subset = df.loc[df["label"] == label, "msg_len"]
         per_class[label] = subset.describe().to_dict()
-
     return {"overall": overall, "per_class": per_class}
 # PLOTS
-def plot_class_distribution(df: pd.DataFrame):
-    """Bar chart of ham vs spam counts."""
+def plot_class_distribution(df: pd.DataFrame): #creates a bar chart showing how many “ham” vs “spam” messages you have
     fig, ax = plt.subplots(figsize=(6, 4))
     counts = df["label"].value_counts()
     colors = ["#2ecc71", "#e74c3c"]
@@ -74,17 +66,14 @@ def plot_class_distribution(df: pd.DataFrame):
     ax.bar_label(ax.containers[0], fontsize=11, fontweight="bold")
     plt.xticks(rotation=0)
     plt.tight_layout()
-    path = os.path.join(FIGURE_DIR, "class_distribution.png")
+    path = os.path.join(FIGURE_DIR, "class_distribution.png") ##
     fig.savefig(path, dpi=150)
     plt.close(fig)
     print(f"[quality] Saved → {path}")
     return path
-
 def plot_message_lengths(df: pd.DataFrame):
-    """Histogram of message lengths by class."""
     df = df.copy()
     df["msg_len"] = df["message"].str.len()
-
     fig, ax = plt.subplots(figsize=(8, 4))
     for label, color in [("ham", "#2ecc71"), ("spam", "#e74c3c")]:
         subset = df.loc[df["label"] == label, "msg_len"]
@@ -95,7 +84,7 @@ def plot_message_lengths(df: pd.DataFrame):
     ax.set_ylabel("Frequency")
     ax.legend()
     plt.tight_layout()
-    path = os.path.join(FIGURE_DIR, "message_lengths.png")
+    path = os.path.join(FIGURE_DIR, "message_lengths.png") ##
     fig.savefig(path, dpi=150)
     plt.close(fig)
     print(f"[quality] Saved → {path}")
@@ -179,7 +168,6 @@ def generate_html_report(missing, dupes, balance, lengths):
 </body>
 </html>
 """
-
     path = os.path.join(REPORT_DIR, "quality_report.html")
     with open(path, "w", encoding="utf-8") as f:
         f.write(html)
@@ -190,30 +178,22 @@ def main():
     print("=" * 60)
     print(" SMS Spam Classifier — Data Quality Report")
     print("=" * 60)
-
     _ensure_dirs()
     df = load_clean_data()
-
     missing  = missing_values_report(df)
     dupes    = duplicate_report(df)
     balance  = class_balance(df)
     lengths  = message_length_stats(df)
-
     print(f"\n[quality] Missing values: {missing}")
     print(f"[quality] Duplicates:     {dupes}")
     print(f"[quality] Class balance:  {balance}")
-
     # Plots
     plot_class_distribution(df)
     plot_message_lengths(df)
-
     # HTML report
     generate_html_report(missing, dupes, balance, lengths)
-
     print("=" * 60)
     print(" Quality report complete!")
     print("=" * 60)
-
-
 if __name__ == "__main__":
     main()
