@@ -69,7 +69,7 @@ def plot_class_distribution(df: pd.DataFrame): #creates a bar chart showing how 
     path = os.path.join(FIGURE_DIR, "class_distribution.png") ##
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"[quality] Saved → {path}")
+    print(f"[quality] Saved -> {path}")
     return path
 def plot_message_lengths(df: pd.DataFrame):
     df = df.copy()
@@ -87,10 +87,10 @@ def plot_message_lengths(df: pd.DataFrame):
     path = os.path.join(FIGURE_DIR, "message_lengths.png") ##
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"[quality] Saved → {path}")
+    print(f"[quality] Saved -> {path}")
     return path
 # HTML REPORT
-def generate_html_report(missing, dupes, balance, lengths):
+def generate_html_report(missing, dupes, balance, lengths): #f string to make the html file easier to read
     """Build a self-contained HTML quality report."""
 
     html = f"""<!DOCTYPE html>
@@ -168,10 +168,10 @@ def generate_html_report(missing, dupes, balance, lengths):
 </body>
 </html>
 """
-    path = os.path.join(REPORT_DIR, "quality_report.html")
+    path = os.path.join(REPORT_DIR, "quality_report.html") #File Writing: The with open(path, "w") as f: line physically creates the .html file you are looking at now.
     with open(path, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"[quality] Saved HTML report → {path}")
+    print(f"[quality] Saved HTML report -> {path}")
     return path
 # MAIN
 def main():

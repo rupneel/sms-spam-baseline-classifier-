@@ -43,6 +43,9 @@ st.markdown("""
     }
     .spam { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     .ham { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 

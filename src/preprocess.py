@@ -7,7 +7,6 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from scipy.sparse import save_npz
@@ -25,10 +24,10 @@ def _ensure_dirs():
     os.makedirs(REPORT_DIR, exist_ok=True)
 def load_clean_data() -> pd.DataFrame:
     if not os.path.exists(CLEAN_FILE):
-        print("[preprocess] ERROR: cleaned data not found. Run ingest.py first.")
+        print("ERROR: cleaned data not found. Run ingest.py first.")
         sys.exit(1)
     return pd.read_csv(CLEAN_FILE)
-# STEP 1 — Text cleaning
+# Text cleaning
 def clean_text(text: str) -> str:
     text = text.lower()
     text = re.sub(r"http\S+|www\.\S+", " ", text)   # URLs
@@ -39,20 +38,15 @@ def clean_text(text: str) -> str:
 def apply_cleaning(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["clean_message"] = df["message"].apply(clean_text)
-    # quick sanity print
-    print("[preprocess] Cleaning examples:")
-    for i in range(min(3, len(df))):
-        print(f"  ORIGINAL : {df.iloc[i]['message'][:80]}")
-        print(f"  CLEANED  : {df.iloc[i]['clean_message'][:80]}\n")
     return df
-# STEP 2 — Encode labels
+# Encode labels
 def encode_labels(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     label_map = {"ham": 0, "spam": 1}
-    df["label_enc"] = df["label"].map(label_map)
-    print(f"[preprocess] Label encoding: {label_map}")
+    df["label_enc"] = df["label"].map(label_map) #replaces ham and spam with 0 and 1
+    print(f"Label encoding: {label_map}")
     return df
-# STEP 3 — Train / test split (BEFORE fitting the vectoriser)
+# Train / test split (BEFORE fitting the vectoriser)
 def split_data(df: pd.DataFrame):
     X = df["clean_message"]
     y = df["label_enc"]
@@ -62,42 +56,27 @@ def split_data(df: pd.DataFrame):
         random_state=RANDOM_STATE,
         stratify=y,
     )
-    print(f"[preprocess] Train set: {len(X_train)} rows  |  "
+    print(f"Train set: {len(X_train)} rows  |  "
           f"Test set: {len(X_test)} rows")
-    print(f"[preprocess] Train spam%: "
+    print(f"Train spam%: "
           f"{y_train.mean() * 100:.1f}%  |  "
           f"Test spam%: {y_test.mean() * 100:.1f}%")
-
     return X_train, X_test, y_train, y_test
-# STEP 4 — TF-IDF vectorisation
-def vectorise(X_train, X_test):
+# TF-IDF vectorisation
+def vectorise(X_train, X_test): #cleaned text
     vectoriser = TfidfVectorizer(
-        max_features=5000,
-        ngram_range=(1, 2),
-        sublinear_tf=True,
-        stop_words="english",
+        max_features=5000, # top 5000 important features
+        ngram_range=(1, 2), #consider words and phrases of 1-2 words
+        sublinear_tf=True, #applies tf=1+log(tf) this Reduces impact of very frequent words
+        stop_words="english", #removes common words like a,the,is,etc
     )
-    X_train_tfidf = vectoriser.fit_transform(X_train)
+    X_train_tfidf = vectoriser.fit_transform(X_train) # learns vocabulary calculates IDF scores and converts text to numbers
     X_test_tfidf  = vectoriser.transform(X_test)
-
     vocab_size = len(vectoriser.vocabulary_)
-    print(f"[preprocess] Vocabulary size: {vocab_size:,} features")
-    print(f"[preprocess] Train matrix:    {X_train_tfidf.shape}")
-    print(f"[preprocess] Test  matrix:    {X_test_tfidf.shape}")
+    print(f"Vocabulary size: {vocab_size:,} features")
+    print(f"Train matrix:    {X_train_tfidf.shape}")
+    print(f"Test  matrix:    {X_test_tfidf.shape}")
     return X_train_tfidf, X_test_tfidf, vectoriser
-# STEP 5 — Top features inspection
-def inspect_top_features(vectoriser, n: int = 20) -> dict:
-    feature_names = vectoriser.get_feature_names_out()
-    idf_scores    = vectoriser.idf_
-    top_idx = idf_scores.argsort()[::-1][:n]
-    top_features = [
-        {"feature": feature_names[i], "idf": round(float(idf_scores[i]), 3)}
-        for i in top_idx
-    ]
-    print(f"\n[preprocess] Top {n} features by IDF (most discriminative):")
-    for rank, f in enumerate(top_features, 1):
-        print(f"  {rank:>2}. {f['feature']:<25} IDF = {f['idf']}")
-    return {"top_features": top_features}
 # STEP 6 — Plots
 def plot_message_length_before_after(df: pd.DataFrame) -> str:
     fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
@@ -125,28 +104,28 @@ def plot_message_length_before_after(df: pd.DataFrame) -> str:
     path = os.path.join(FIGURE_DIR, "preprocess_length_comparison.png")
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"[preprocess] Saved → {path}")
+    print(f"Saved -> {path}")
     return path
 # STEP 7 — Save artefacts
 def save_artefacts(X_train_tfidf, X_test_tfidf, y_train, y_test,
                    vectoriser, report: dict):
     # TF-IDF matrices
-    save_npz(os.path.join(PROCESSED_DIR, "X_train.npz"), X_train_tfidf)
+    save_npz(os.path.join(PROCESSED_DIR, "X_train.npz"), X_train_tfidf) #saves train data as a compressed sparse matrix
     save_npz(os.path.join(PROCESSED_DIR, "X_test.npz"),  X_test_tfidf)
-    print("[preprocess] Saved TF-IDF matrices → data/processed/")
+    print("Saved TF-IDF matrices -> data/processed/")
     # Labels
     y_train.to_csv(os.path.join(PROCESSED_DIR, "y_train.csv"), index=False)
     y_test.to_csv(os.path.join(PROCESSED_DIR, "y_test.csv"),  index=False)
-    print("[preprocess] Saved labels → data/processed/")
+    print("Saved labels -> data/processed/")
     # Vectoriser
-    vec_path = os.path.join(PROCESSED_DIR, "tfidf_vectoriser.joblib")
-    joblib.dump(vectoriser, vec_path)
-    print(f"[preprocess] Saved vectoriser → {vec_path}")
+    vec_path = os.path.join(PROCESSED_DIR, "tfidf_vectoriser.joblib") #filename
+    joblib.dump(vectoriser, vec_path) #Saves trained TfidfVectorizer ,
+    print(f"Saved vectoriser -> {vec_path}")
     # Report
     report_path = os.path.join(REPORT_DIR, "preprocessing_report.json")
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
-    print(f"[preprocess] Saved report → {report_path}")
+    print(f"Saved report -> {report_path}")
 # MAIN
 def main():
     print("=" * 60)
@@ -155,7 +134,7 @@ def main():
     _ensure_dirs()
     # 1. Load
     df = load_clean_data()
-    print(f"[preprocess] Loaded {len(df)} rows\n")
+    print(f"Loaded {len(df)} rows\n")
     # 2. Clean text
     df = apply_cleaning(df)
     # 3. Encode labels
@@ -166,9 +145,7 @@ def main():
     X_train, X_test, y_train, y_test = split_data(df)
     # 6. Vectorise
     X_train_tfidf, X_test_tfidf, vectoriser = vectorise(X_train, X_test)
-    # 7. Inspect top features
-    feature_report = inspect_top_features(vectoriser)
-    # 8. Save everything
+    # 7. Save everything
     report = {
         "total_rows":     len(df),
         "train_rows":     len(X_train),
@@ -180,7 +157,6 @@ def main():
         "ngram_range":    [1, 2],
         "sublinear_tf":   True,
         "stop_words":     "english",
-        **feature_report,
     }
     save_artefacts(X_train_tfidf, X_test_tfidf, y_train, y_test,
                    vectoriser, report)
