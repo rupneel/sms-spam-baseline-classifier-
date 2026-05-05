@@ -9,7 +9,6 @@ RAW_DIR      = os.path.join(PROJECT_ROOT, "data", "raw")
 CLEANED_DIR  = os.path.join(PROJECT_ROOT, "data", "cleaned")
 RAW_FILE     = os.path.join(RAW_DIR, "spam.csv")
 CLEAN_FILE   = os.path.join(CLEANED_DIR, "sms_clean.csv")
-
 # Download link
 DOWNLOAD_URL = (
     "https://raw.githubusercontent.com/justmarkham/DAT8/master/data/sms.tsv"
@@ -24,7 +23,6 @@ def download_dataset():
     print(f"Downloading dataset → {RAW_FILE}")
     urllib.request.urlretrieve(DOWNLOAD_URL, RAW_FILE) #urlib.request is the module , urlretrieve is the function
     print(f"Download completed")
-
 # Load data (simplified for GitHub TSV)
 def load_raw_data() -> pd.DataFrame:
     df = pd.read_csv(
