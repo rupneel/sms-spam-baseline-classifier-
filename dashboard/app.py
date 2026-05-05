@@ -86,7 +86,7 @@ with st.sidebar:
     st.write("This tool uses a Multinomial Naive Bayes model trained on a TF-IDF vectorised SMS dataset.")
 
 # --- MAIN CONTENT ---
-st.title("📧 SMS Spam Classifier")
+st.title("SMS Spam Classifier")
 st.write("Enter an SMS message below to check if it's Spam or Ham.")
 
 vec, model = load_model()
