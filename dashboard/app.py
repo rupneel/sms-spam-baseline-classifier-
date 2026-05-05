@@ -16,7 +16,6 @@ MATRIX_PATH  = os.path.join(PROJECT_ROOT, "outputs", "figures", "confusion_matri
 # --- UI SETUP ---
 st.set_page_config(
     page_title="SMS Spam Classifier",
-    page_icon="📧",
     layout="wide"
 )
 
