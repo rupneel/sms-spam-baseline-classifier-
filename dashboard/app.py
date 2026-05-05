@@ -35,17 +35,26 @@ st.markdown("""
         border-right: 1px solid #2d2e3a;
     }
     
-    /* Fix for Sidebar Toggle: We hide the toolbar but keep the header for the collapse button */
+    /* Fix for Sidebar Toggle: Aggressively force visibility */
     [data-testid="stHeader"] {
         background-color: transparent !important;
+        z-index: 999;
     }
     [data-testid="stToolbar"] {
-        visibility: hidden;
+        visibility: hidden !important;
+    }
+    button[data-testid="stSidebarCollapse"] {
+        visibility: visible !important;
+        display: flex !important;
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 50% !important;
+        margin-left: 10px !important;
     }
     
     /* Hide Deploy Button and Footer */
-    .stAppDeployButton { display: none; }
-    footer { visibility: hidden; }
+    .stAppDeployButton { display: none !important; }
+    footer { visibility: hidden !important; }
     
     /* Main Content Styling */
     .main {
