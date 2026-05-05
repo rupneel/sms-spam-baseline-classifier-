@@ -23,98 +23,26 @@ st.set_page_config(
 # --- STYLING ---
 st.markdown("""
 <style>
-    /* Core Theme Overrides */
-    .stApp {
-        background-color: #0e1117;
-        color: #ffffff;
-    }
-    
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background-color: #1a1c23;
-        border-right: 1px solid #2d2e3a;
-    }
-    
-    /* Fix for Sidebar Toggle: Aggressively force visibility */
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-        z-index: 999;
-    }
-    [data-testid="stToolbar"] {
-        visibility: hidden !important;
-    }
-    button[data-testid="stSidebarCollapse"] {
-        visibility: visible !important;
-        display: flex !important;
-        color: #ffffff !important;
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        border-radius: 50% !important;
-        margin-left: 10px !important;
-    }
-    
-    /* Hide Deploy Button and Footer */
-    .stAppDeployButton { display: none !important; }
-    footer { visibility: hidden !important; }
-    
-    /* Main Content Styling */
     .main {
-        background-color: #0e1117;
-        padding-top: 2rem;
+        background-color: #f8f9fa;
     }
-    
-    /* Buttons */
     .stButton>button {
         width: 100%;
-        border-radius: 8px;
-        height: 3.5em;
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        border-radius: 5px;
+        height: 3em;
+        background-color: #007bff;
         color: white;
-        border: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
     }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
-        background: linear-gradient(135deg, #0088ff 0%, #0066cc 100%);
-    }
-    
-    /* Prediction Boxes */
     .prediction-box {
-        padding: 30px;
-        border-radius: 12px;
-        margin: 25px 0;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
         text-align: center;
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        animation: fadeIn 0.5s ease-out;
+        font-size: 24px;
+        font-weight: bold;
     }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .spam { 
-        background: linear-gradient(135deg, #4d1d24 0%, #2a0a0d 100%);
-        color: #ff4d4d;
-        border: 1px solid #721c24;
-    }
-    .ham { 
-        background: linear-gradient(135deg, #1d4d2b 0%, #0a2a12 100%);
-        color: #4dff88;
-        border: 1px solid #155724;
-    }
-    
-    /* Input Area */
-    .stTextArea textarea {
-        background-color: #1e2128 !important;
-        color: #ffffff !important;
-        border: 1px solid #3d414a !important;
-        border-radius: 10px !important;
-    }
+    .spam { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .ham { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 </style>
 """, unsafe_allow_html=True)
 
