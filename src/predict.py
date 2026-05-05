@@ -23,9 +23,8 @@ def load_artefacts():
 def predict(message: str, vectoriser, model):
     cleaned = clean_text(message)
     features = vectoriser.transform([cleaned])
-    prediction = model.predict(features)[0]
-    # Get probability/confidence
-    prob = model.predict_proba(features)[0]
+    prediction = model.predict(features)[0] #[0] extracts the value from array 
+    prob = model.predict_proba(features)[0] 
     label = "SPAM" if prediction == 1 else "HAM"
     confidence = prob[prediction] * 100
     return label, confidence

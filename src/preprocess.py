@@ -19,25 +19,25 @@ REPORT_DIR   = os.path.join(PROJECT_ROOT, "outputs", "reports")
 RANDOM_STATE = 42
 TEST_SIZE    = 0.20
 def _ensure_dirs():
-    os.makedirs(PROCESSED_DIR, exist_ok=True)
+    os.makedirs(PROCESSED_DIR, exist_ok=True) #don’t crash if folder already exists
     os.makedirs(FIGURE_DIR, exist_ok=True)
     os.makedirs(REPORT_DIR, exist_ok=True)
 def load_clean_data() -> pd.DataFrame:
     if not os.path.exists(CLEAN_FILE):
         print("ERROR: cleaned data not found. Run ingest.py first.")
-        sys.exit(1)
+        sys.exit(1) #Stops the program immediately. 1 is the error code
     return pd.read_csv(CLEAN_FILE)
 # Text cleaning
 def clean_text(text: str) -> str:
     text = text.lower()
-    text = re.sub(r"http\S+|www\.\S+", " ", text)   # URLs
+    text = re.sub(r"http\S+|www\.\S+", " ", text)   # URLs if those patterns are detected it leaves whitespace on there in the text 
     text = re.sub(r"\d+", " ", text)                  # digits
     text = re.sub(r"[^a-z\s]", " ", text)             # non-alpha
     text = re.sub(r"\s+", " ", text).strip()           # extra spaces
     return text
 def apply_cleaning(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df["clean_message"] = df["message"].apply(clean_text)
+    df["clean_message"] = df["message"].apply(clean_text) #columns
     return df
 # Encode labels
 def encode_labels(df: pd.DataFrame) -> pd.DataFrame:
@@ -52,9 +52,9 @@ def split_data(df: pd.DataFrame):
     y = df["label_enc"]
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
-        test_size=TEST_SIZE,
-        random_state=RANDOM_STATE,
-        stratify=y,
+        test_size=TEST_SIZE,  #0.20
+        random_state=RANDOM_STATE, #42
+        stratify=y, #Keeps same class distribution in both train and test sets. , y are the lables 90:10
     )
     print(f"Train set: {len(X_train)} rows  |  "
           f"Test set: {len(X_test)} rows")
@@ -71,7 +71,7 @@ def vectorise(X_train, X_test): #cleaned text
         stop_words="english", #removes common words like a,the,is,etc
     )
     X_train_tfidf = vectoriser.fit_transform(X_train) # learns vocabulary calculates IDF scores and converts text to numbers
-    X_test_tfidf  = vectoriser.transform(X_test)
+    X_test_tfidf  = vectoriser.transform(X_test) #Uses same vocabulary from training,Converts test text into TF-IDF using that vocabulary
     vocab_size = len(vectoriser.vocabulary_)
     print(f"Vocabulary size: {vocab_size:,} features")
     print(f"Train matrix:    {X_train_tfidf.shape}")
@@ -100,9 +100,9 @@ def plot_message_length_before_after(df: pd.DataFrame) -> str:
     axes[1].set_xlabel("Characters")
     axes[1].legend()
     plt.suptitle("Message Length Distribution", fontsize=14, fontweight="bold")
-    plt.tight_layout()
+    plt.tight_layout() #Fixes spacing so plots don’t overlap
     path = os.path.join(FIGURE_DIR, "preprocess_length_comparison.png")
-    fig.savefig(path, dpi=150)
+    fig.savefig(path, dpi=150) #good quality
     plt.close(fig)
     print(f"Saved -> {path}")
     return path

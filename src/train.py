@@ -8,7 +8,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
-
 from scipy.sparse import load_npz
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import (
@@ -46,12 +45,12 @@ def load_artefacts():
 def train_model(X_train, y_train):
     model = MultinomialNB()          
     model.fit(X_train, y_train) #.fit() trains model using the TF-IDF matrix and the labels
-    print(f"Classes learned: {model.classes_}") #built in [0,1] 0-ham and 1-spam
+    print(f"Classes learned: {model.classes_}") #built in [0,1] 0-ham and 1-spam , list of possible answers
     print(f"Alpha (smoothing): {model.alpha}") #built in, smoothing parameter
     return model
 # PREDICTING
 def predict(model, X_test):
-    y_pred = model.predict(X_test) #Model takes unseen messages (X_test) and Predicts 0 → ham 1 → spam
+    y_pred = model.predict(X_test) #Model takes unseen messages (X_test) and Predicts 0 → ham 1 → spam , just the score part
     # Quick summary
     n_pred_spam = y_pred.sum() #sum() counts the 1s (spam)
     n_pred_ham  = len(y_pred) - n_pred_spam #the rest are ham

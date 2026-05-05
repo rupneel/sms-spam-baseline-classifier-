@@ -92,7 +92,6 @@ def plot_message_lengths(df: pd.DataFrame):
 # HTML REPORT
 def generate_html_report(missing, dupes, balance, lengths): #f string to make the html file easier to read
     """Build a self-contained HTML quality report."""
-
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,7 +115,6 @@ def generate_html_report(missing, dupes, balance, lengths): #f string to make th
 <h1>📊 Data Quality Report</h1>
 <p><strong>Dataset:</strong> SMS Spam Collection (cleaned)<br>
    <strong>Rows:</strong> {dupes['total_rows']:,}</p>
-
 <h2>1. Missing Values</h2>
 <table>
   <tr><th>Column</th><th>Missing Count</th><th>Missing %</th><th>Status</th></tr>
@@ -127,9 +125,7 @@ def generate_html_report(missing, dupes, balance, lengths): #f string to make th
         html += (f'  <tr><td>{col}</td><td>{info["missing_count"]}</td>'
                  f'<td>{info["missing_pct"]}%</td>'
                  f'<td class="{status_class}">{status_text}</td></tr>\n')
-
     html += f"""</table>
-
 <h2>2. Duplicate Analysis</h2>
 <table>
   <tr><th>Metric</th><th>Count</th></tr>
@@ -137,7 +133,6 @@ def generate_html_report(missing, dupes, balance, lengths): #f string to make th
   <tr><td>Duplicate messages (text only)</td><td>{dupes['duplicate_messages']}</td></tr>
   <tr><td>Total rows</td><td>{dupes['total_rows']:,}</td></tr>
 </table>
-
 <h2>3. Class Balance</h2>
 <table>
   <tr><th>Label</th><th>Count</th><th>Percentage</th></tr>
@@ -145,10 +140,8 @@ def generate_html_report(missing, dupes, balance, lengths): #f string to make th
     for label, info in balance.items():
         html += (f'  <tr><td>{label}</td><td>{info["count"]:,}</td>'
                  f'<td>{info["pct"]}%</td></tr>\n')
-
     html += f"""</table>
 <img src="../figures/class_distribution.png" alt="Class Distribution">
-
 <h2>4. Message Length Statistics</h2>
 <table>
   <tr><th>Statistic</th><th>Overall</th><th>Ham</th><th>Spam</th></tr>
@@ -161,10 +154,8 @@ def generate_html_report(missing, dupes, balance, lengths): #f string to make th
         fmt = lambda v: f"{v:,.1f}" if isinstance(v, float) else f"{v:,}" if isinstance(v, (int,)) else str(v)
         html += (f'  <tr><td>{stat}</td><td>{fmt(overall_val)}</td>'
                  f'<td>{fmt(ham_val)}</td><td>{fmt(spam_val)}</td></tr>\n')
-
     html += """</table>
 <img src="../figures/message_lengths.png" alt="Message Lengths">
-
 </body>
 </html>
 """
