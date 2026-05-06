@@ -2,7 +2,6 @@ import os
 import re
 import sys
 import joblib
-# CONFIGURATION
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VEC_PATH     = os.path.join(PROJECT_ROOT, "data", "processed", "tfidf_vectoriser.joblib")
 MODEL_PATH   = os.path.join(PROJECT_ROOT, "outputs", "models", "naive_bayes.joblib")
@@ -23,32 +22,29 @@ def load_artefacts():
 def predict(message: str, vectoriser, model):
     cleaned = clean_text(message)
     features = vectoriser.transform([cleaned])
-    prediction = model.predict(features)[0] #[0] extracts the value from array 
-    prob = model.predict_proba(features)[0] 
+    prediction = model.predict(features)[0] #“Is this HAM or SPAM?” , array([1]) , extracts 1 -> spam
+    prob = model.predict_proba(features)[0] #gives probability of each class [ham,spam]
     label = "SPAM" if prediction == 1 else "HAM"
     confidence = prob[prediction] * 100
     return label, confidence
 def main():
     vectoriser, model = load_artefacts()
-
     # Check if message was passed via CLI argument
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 1: #sys.argv stores command-line arguments.
         msg = sys.argv[1]
     else:
         # Otherwise, ask for it interactively
         print("\n--- SMS Spam Classifier (Interactive Mode) ---")
         msg = input("Enter message: ")
-
     if not msg.strip():
         print("Error: No message provided.")
         return
-
     label, confidence = predict(msg, vectoriser, model)
     print("\n" + "="*40)
     print(f" INPUT: {msg}")
     print("-"*40)
     print(f" RESULT: {label}")
-    print(f" CONFIDENCE: {confidence:.2f}%")
+    print(f" CONFIDENCE: {confidence:.2f}%")#with 2 decimal places.
     print("="*40 + "\n")
 if __name__ == "__main__":
     main()

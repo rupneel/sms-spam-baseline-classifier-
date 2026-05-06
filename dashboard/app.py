@@ -5,7 +5,6 @@ import joblib
 import json
 import pandas as pd
 from PIL import Image
-
 # --- CONFIGURATION ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VEC_PATH     = os.path.join(PROJECT_ROOT, "data", "processed", "tfidf_vectoriser.joblib")
@@ -106,17 +105,13 @@ else:
             features = vec.transform([cleaned])
             pred = model.predict(features)[0]
             probs = model.predict_proba(features)[0]
-            
             label = "SPAM" if pred == 1 else "HAM"
             conf = probs[pred] * 100
-            
             # Display Result
             css_class = "spam" if label == "SPAM" else "ham"
             st.markdown(f'<div class="prediction-box {css_class}">Result: {label}</div>', unsafe_allow_html=True)
-            
             st.write(f"**Confidence:** {conf:.2f}%")
             st.progress(conf / 100)
-            
             # Probability breakdown
             st.write("---")
             st.subheader("Probability Breakdown")
@@ -125,7 +120,6 @@ else:
                 "Probability": [probs[0], probs[1]]
             })
             st.bar_chart(prob_df.set_index("Label"))
-
     # Extra Visuals
     with st.expander("Show Detailed Evaluation"):
         if os.path.exists(MATRIX_PATH):
